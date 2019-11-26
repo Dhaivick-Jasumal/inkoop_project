@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Inkoop Project</title>
+	<script type="text/javascript">
+		//initializing counter variable
+		let counter=10;
+
+		//function to generate random number and start counter of 10 seconds
+		function generateRandomNumber(){
+			min = 100000;
+		    max = 999999;
+		    let randomnumber=Math.floor(Math.random() * (max - min + 1)) + min;
+			document.getElementById("randomnoplaceholder").innerHTML = randomnumber;
+			localStorage.setItem("myrandom",randomnumber);
+			let x=setInterval(function(){ 
+				if(counter==0){
+					refreshDOM();
+					clearInterval(x)
+				}
+				else{
+					document.getElementById("alerttext").innerHTML = "Refreshing the page in "+counter+" seconds";
+					counter=counter-1;
+
+				}
+			},1000);
+		}
+
+		//make 1st half of DOM invisible and make 2nd half visible
+		function refreshDOM(){			
+			document.getElementById("secondheading").style.display = "block";
+			document.getElementById("guessbutton").style.display = "inline";
+			document.getElementById("replay").style.display = "inline";
+			document.getElementById("guessfield").style.display = "block";
+
+			document.getElementById("firstheading").style.display = "none";
+			document.getElementById("randomnoplaceholder").style.display = "none";
+			document.getElementById("generatebutton").style.display = "none";
+			document.getElementById("alerttext").style.display = "none";
+		}
+
+		//make 2nd half of dom invisible and make 1st half visible
+		function replayDOM(){	
+
+			//initializing values
+			counter=10;
+			document.getElementById("randomnoplaceholder").innerHTML ="";
+			document.getElementById("alerttext").innerHTML ="";
+			document.getElementById("guessfield").value = "";
+
+			document.getElementById("secondheading").style.display = "none";
+			document.getElementById("guessbutton").style.display = "none";
+			document.getElementById("replay").style.display = "none";
+			document.getElementById("guessfield").style.display = "none";
+
+			document.getElementById("firstheading").style.display = "block";
+			document.getElementById("randomnoplaceholder").style.display = "block";
+			document.getElementById("generatebutton").style.display = "block";
+			document.getElementById("alerttext").style.display = "block";
+		}
+
+		//function to compare inputted values
+		function compareValues(){
+			let correctNoOfDigitsGuessed=0;
+			let randomValueGenerated=localStorage.getItem("myrandom");
+			let randomValueGuessed=document.getElementById("guessfield").value;
+			let pattern=/[0-9]{6}/;
+			if(randomValueGuessed.match(pattern)){
+				if(randomValueGenerated==randomValueGuessed){
+					alert("good job, you have guessed all digits correctly");
+				}
+				else{
+					for(i=0;i<randomValueGuessed.length;i++){
+					  	if(randomValueGenerated[i]==randomValueGuessed[i]){
+					  		correctNoOfDigitsGuessed++	
+					    }
+					}
+					alert("You have guessed "+correctNoOfDigitsGuessed+" digits correctly, try again");
+				}
+				
+			}
+			else{
+				alert("enter 6 digit number only");
+			}
+		}
+	</script>
+</head>
+<body>
+    <!-- 1st half of DOM  -->
+	<h1 id="firstheading">Generate the number</h1>
+	<p id="randomnoplaceholder"></p>
+	<button onclick="generateRandomNumber()" id="generatebutton">Button</button>
+	<p id="alerttext"></p>
+
+	<!-- 2nd half of DOM -->
+	<h1 id="secondheading">Guess the number</p>
+	<input type="text" name="guessfield" id="guessfield">
+	<button id="guessbutton" onclick="compareValues()">Guess</button>
+	<button id="replay" onclick="replayDOM()">Replay</button>
+
+	<!-- Making 2nd half of DOM invisible onload -->
+	<script type="text/javascript">
+		document.getElementById("secondheading").style.display = "none";
+		document.getElementById("guessbutton").style.display = "none";
+		document.getElementById("replay").style.display = "none";
+		document.getElementById("guessfield").style.display = "none";
+	</script>
+</body>
+</html>
